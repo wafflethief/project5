@@ -7,6 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,40 +40,58 @@ public class MainActivity extends AppCompatActivity {
         checkSentiment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //executeHTTP();
-                Toast.makeText(MainActivity.this,"You clicked compliment", Toast.LENGTH_LONG);
+
+                // Instantiate the RequestQueue.
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                String url ="https://api.oceandrivers.com:443/v1.0/getAemetStation/aeropuertopalma/lastdata/";
+
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+
+                /*String query = "you are ugly";
+                URL url = null;
+                try {
+                    url = new URL("https://sentim-api.herokuapp.com/api/v1/");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                HttpURLConnection con = null;
+                try {
+                    con = (HttpURLConnection) url.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    con.setRequestMethod("POST");
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                }
+                con.setRequestProperty("Content-Type", "application/json");
+                try {
+                    con.getOutputStream().write(query.getBytes("UTF8"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
+                //Toast.makeText(MainActivity.this,"You clicked compliment", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    /*public static String executeHTTP(){
-        try {
-            URL url = new URL("rest.bandsintown.com");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
 
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes("poop");
-            wr.close();
-
-            InputStream istream = conn.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
-            StringBuilder resp = new StringBuilder();
-            String line;
-            while((line = reader.readLine()) != null){
-                resp.append(line);
-                resp.append('\r');
-            }
-            reader.close();
-            System.out.println(resp);
-            return resp.toString();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 }
