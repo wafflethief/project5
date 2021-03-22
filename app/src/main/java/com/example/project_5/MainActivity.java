@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -18,21 +19,26 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 
     public Button checkSentiment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkSentiment = (Button) findViewById(R.id.button);
+
+        // assign buttons
+        checkSentiment = (Button) findViewById(R.id.button_compliment);
+
+        // onClick listeners for each button
         checkSentiment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                executeHTTP();
-
+                //executeHTTP();
+                Toast.makeText(MainActivity.this,"You clicked compliment", Toast.LENGTH_LONG);
             }
         });
     }
 
-    public static String executeHTTP(){
+    /*public static String executeHTTP(){
         try {
             URL url = new URL("rest.bandsintown.com");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -61,5 +67,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 }
