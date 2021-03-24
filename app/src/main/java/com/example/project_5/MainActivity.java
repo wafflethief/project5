@@ -11,8 +11,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -26,7 +29,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    public Button checkSentiment;
+    public Button button1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +37,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // assign buttons
-        checkSentiment = (Button) findViewById(R.id.button_compliment);
+        button1 = (Button) findViewById(R.id.button1);
 
         // onClick listeners for each button
-        checkSentiment.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // Instantiate the RequestQueue.
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                // this url is a json OBJECT
                 String url ="https://api.oceandrivers.com:443/v1.0/getAemetStation/aeropuertopalma/lastdata/";
 
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        // Request a string response from the provided URL.
+                /*StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -58,40 +76,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     }
-                });
-
+                });*/
                 // Add the request to the RequestQueue.
-                queue.add(stringRequest);
+                queue.add(jsonObjectRequest);
 
-                /*String query = "you are ugly";
-                URL url = null;
-                try {
-                    url = new URL("https://sentim-api.herokuapp.com/api/v1/");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection con = null;
-                try {
-                    con = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    con.setRequestMethod("POST");
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                }
-                con.setRequestProperty("Content-Type", "application/json");
-                try {
-                    con.getOutputStream().write(query.getBytes("UTF8"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
-                //Toast.makeText(MainActivity.this,"You clicked compliment", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "You clicked compliment", Toast.LENGTH_LONG).show();
             }
         });
     }
-
-
 }

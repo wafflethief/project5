@@ -2,4 +2,6 @@
     <string name="app_name">project_5</string>
     <string name="hey">hey</string>
     <string name="Button2">button2</string>
+    <string name="Button3">button3</string>
+    <string name="Compliment">compliment</string>
 </resources>
