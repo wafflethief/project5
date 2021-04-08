@@ -11,6 +11,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -41,25 +42,26 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private final int ACT_CHECK_TTS_DATA = 1000;
     Button button_kanye;
     private TextToSpeech tts = null;
+    EditText ed1;
     String quote = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR){
+                    tts.setPitch(0.1f);
+                    tts.setSpeechRate(0.1f);
                     tts.setLanguage(Locale.US);
+                    tts.speak("hello", TextToSpeech.QUEUE_FLUSH, null);
                 }
             }
         });
-        
         // assign buttons
         button_kanye = (Button) findViewById(R.id.button_kanye);
-
         // onClick listeners for each button
         button_kanye.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -90,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 // Add the request to the RequestQueue.
                 queue.add(jsonObjectRequest);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Toast.makeText(MainActivity.this, "VERSION GUUD", Toast.LENGTH_LONG).show();
-                    tts.speak(quote, TextToSpeech.QUEUE_ADD, null, null);
+                    tts.speak(quote, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
             }
         });
@@ -114,18 +115,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         }
     }
-
+    /*
     public void speak(String quote, int qmode){
         tts.setPitch(0.1f);
         tts.setSpeechRate(0.1f);
         tts.speak(quote, TextToSpeech.QUEUE_FLUSH, null);
-        /*if(qmode == 1){
-            tts.speak(quote, TextToSpeech.QUEUE_ADD, null);
-        }
-        else{
-            tts.speak("margarita", TextToSpeech.QUEUE_FLUSH, null);
-        }*/
-    }
+    }*/
 
     @Override
     public void onInit(int status) {
@@ -144,12 +139,21 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             Toast.makeText(MainActivity.this, "TTS failed", Toast.LENGTH_SHORT).show();
         }
     }
-    /*@Override
+
+    @Override
     protected void onDestroy(){
         if (tts != null){
             tts.stop();
             tts.shutdown();
         }
         super.onDestroy();
-    }*/
+    }
+
+    public void onPause(){
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
+    }
 }
